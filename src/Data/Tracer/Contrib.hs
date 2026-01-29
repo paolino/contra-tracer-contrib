@@ -15,7 +15,8 @@ import Data.Tracer.Contrib
 main :: IO ()
 main = logTracer Nothing $ \\tracer -> do
     safeTracer <- newThreadSafeTracer tracer
-    let timestamped = addTimestampsTracer safeTracer
+    throttled <- throttleByFrequency [\\_ -> Just 1.0] safeTracer
+    let timestamped = timestampTracer throttled
     traceWith timestamped "Hello, world!"
 @
 -}
@@ -35,8 +36,8 @@ module Data.Tracer.Contrib
     , newThreadSafeTracer
 
       -- * Timestamps
-    , Timestamp (..)
-    , addTimestampsTracer
+    , Timestamped (..)
+    , timestampTracer
 
       -- * Throttling
     , Throttled (..)
@@ -55,8 +56,7 @@ import Data.Tracer.Intercept (intercept)
 import Data.Tracer.LogFile (logFileTracer, logTracer)
 import Data.Tracer.ThreadSafe (newThreadSafeTracer)
 import Data.Tracer.Throttle (Throttled (..), throttleByFrequency)
-import Data.Tracer.Timestamp (Timestamp (..))
-import Data.Tracer.Timestamps (addTimestampsTracer)
+import Data.Tracer.Timestamp (Timestamped (..), timestampTracer)
 import Data.Tracer.TraceWith
     ( contra
     , trace
