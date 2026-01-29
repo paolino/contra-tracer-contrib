@@ -23,6 +23,9 @@ jobs:
         with:
           cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
+      - name: Update package index
+        run: nix develop .#iohk --quiet -c cabal update
+
       - name: Build
         run: nix develop .#iohk --quiet -c cabal build -f iohk --enable-tests
 
@@ -40,6 +43,9 @@ jobs:
       - uses: paolino/dev-assets/setup-nix@v0.0.1
         with:
           cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Update package index
+        run: nix develop --quiet -c cabal update
 
       - name: Build
         run: nix develop --quiet -c cabal build --enable-tests
