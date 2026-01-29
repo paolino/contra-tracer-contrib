@@ -49,9 +49,9 @@ library
   default-language: Haskell2010
 
 test-suite unit-tests
-  import:           warnings
-  type:             exitcode-stdio-1.0
-  main-is:          main.hs
+  import:             warnings
+  type:               exitcode-stdio-1.0
+  main-is:            main.hs
   other-modules:
     Data.Tracer.InterceptSpec
     Data.Tracer.LogFileSpec
@@ -60,6 +60,7 @@ test-suite unit-tests
     Data.Tracer.TimestampsSpec
     Data.Tracer.TraceWithSpec
 
+  build-tool-depends: hspec-discover:hspec-discover
   build-depends:
     , async
     , base                   >=4.14 && <5
@@ -72,6 +73,6 @@ test-suite unit-tests
     , temporary
     , time
 
-  hs-source-dirs:   test
-  default-language: Haskell2010
-  ghc-options:      -threaded -rtsopts -with-rtsopts=-N
+  hs-source-dirs:     test
+  default-language:   Haskell2010
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
