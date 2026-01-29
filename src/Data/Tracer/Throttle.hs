@@ -15,11 +15,12 @@ module Data.Tracer.Throttle
     , throttleByFrequency
     ) where
 
-import Control.Tracer (Tracer, arrow, emit, traceWith)
+import Control.Tracer (Tracer, traceWith)
 import Data.IORef (modifyIORef', newIORef, readIORef)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Time.Clock (UTCTime, diffUTCTime)
+import Data.Tracer.Internal (mkTracer)
 import Data.Tracer.Timestamp (Timestamp (..))
 
 {- | Result of throttling an event.
@@ -69,7 +70,7 @@ throttleByFrequency
     -> IO (Tracer IO (Timestamp a))
 throttleByFrequency matchers downstream = do
     stateRef <- newIORef (Map.empty :: Map Int ThrottleState)
-    return $ arrow $ emit $ \event -> do
+    return $ mkTracer $ \event -> do
         let ts = timestampTime event
         case findMatch matchers (timestampEvent event) of
             Nothing ->

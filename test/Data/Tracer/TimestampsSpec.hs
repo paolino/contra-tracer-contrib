@@ -1,7 +1,8 @@
 module Data.Tracer.TimestampsSpec (spec) where
 
-import Control.Tracer (arrow, emit, traceWith)
+import Control.Tracer (Tracer (Tracer), traceWith)
 import Data.IORef (newIORef, readIORef, writeIORef)
+import Data.Tracer.Internal (mkTracer)
 import Data.Tracer.Timestamps (addTimestampsTracer)
 import Test.Hspec
 
@@ -10,7 +11,7 @@ spec = do
     describe "addTimestampsTracer" $ do
         it "prepends timestamp to messages" $ do
             ref <- newIORef ""
-            let baseTracer = arrow $ emit $ writeIORef ref
+            let baseTracer = mkTracer $ writeIORef ref
                 timestamped = addTimestampsTracer baseTracer
             traceWith timestamped "test message"
             output <- readIORef ref
@@ -20,7 +21,7 @@ spec = do
 
         it "produces valid UTC timestamp format" $ do
             ref <- newIORef ""
-            let baseTracer = arrow $ emit $ writeIORef ref
+            let baseTracer = mkTracer $ writeIORef ref
                 timestamped = addTimestampsTracer baseTracer
             traceWith timestamped "test"
             output <- readIORef ref
@@ -34,7 +35,7 @@ spec = do
 
         it "preserves original message content" $ do
             ref <- newIORef ""
-            let baseTracer = arrow $ emit $ writeIORef ref
+            let baseTracer = mkTracer $ writeIORef ref
                 timestamped = addTimestampsTracer baseTracer
                 testMsg = "This is a test message with special chars: !@#$%"
             traceWith timestamped testMsg
@@ -43,7 +44,7 @@ spec = do
 
         it "handles empty messages" $ do
             ref <- newIORef ""
-            let baseTracer = arrow $ emit $ writeIORef ref
+            let baseTracer = mkTracer $ writeIORef ref
                 timestamped = addTimestampsTracer baseTracer
             traceWith timestamped ""
             output <- readIORef ref
@@ -52,7 +53,7 @@ spec = do
 
         it "handles multiline messages" $ do
             ref <- newIORef ""
-            let baseTracer = arrow $ emit $ writeIORef ref
+            let baseTracer = mkTracer $ writeIORef ref
                 timestamped = addTimestampsTracer baseTracer
                 testMsg = "line1\nline2\nline3"
             traceWith timestamped testMsg

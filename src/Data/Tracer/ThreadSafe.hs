@@ -11,7 +11,8 @@ module Data.Tracer.ThreadSafe
     ) where
 
 import Control.Concurrent.MVar (newMVar, withMVar)
-import Control.Tracer (Tracer, arrow, emit, traceWith)
+import Control.Tracer (Tracer, traceWith)
+import Data.Tracer.Internal (mkTracer)
 
 {- | Create a thread-safe tracer by synchronizing access to the underlying
 tracer.
@@ -31,6 +32,6 @@ newThreadSafeTracer
     -> IO (Tracer IO a)
 newThreadSafeTracer unsafe = do
     mvar <- newMVar ()
-    return $ arrow $ emit $ \a ->
+    return $ mkTracer $ \a ->
         withMVar mvar $ \_ ->
             traceWith unsafe a

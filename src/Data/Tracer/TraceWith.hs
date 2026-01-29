@@ -17,11 +17,12 @@ module Data.Tracer.TraceWith
 
       -- * Record Selectors
 
-      -- | The pattern synonym exposes three record selectors:
-      --
-      -- * 'tracer' - returns the tracer unchanged
-      -- * 'trace' - extracts the @a -> m ()@ emitter function
-      -- * 'contra' - applies contravariant mapping: @(b -> a) -> Tracer m b@
+      {- | The pattern synonym exposes three record selectors:
+
+      * 'tracer' - returns the tracer unchanged
+      * 'trace' - extracts the @a -> m ()@ emitter function
+      * 'contra' - applies contravariant mapping: @(b -> a) -> Tracer m b@
+      -}
     , tracer
     , trace
     , contra

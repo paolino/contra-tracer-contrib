@@ -3,8 +3,9 @@
 
 module Data.Tracer.TraceWithSpec (spec) where
 
-import Control.Tracer (Tracer, arrow, emit, traceWith)
+import Control.Tracer (Tracer, traceWith)
 import Data.IORef (newIORef, readIORef, writeIORef)
+import Data.Tracer.Internal (mkTracer)
 import Data.Tracer.TraceWith
     ( contra
     , trace
@@ -20,7 +21,7 @@ spec = do
         it "extracts tracer unchanged" $ do
             ref <- newIORef ""
             let original :: Tracer IO String
-                original = arrow $ emit $ writeIORef ref
+                original = mkTracer $ writeIORef ref
                 TraceWith extracted _ _ = original
             traceWith extracted "test"
             result <- readIORef ref
@@ -29,7 +30,7 @@ spec = do
         it "extracts trace function" $ do
             ref <- newIORef ""
             let original :: Tracer IO String
-                original = arrow $ emit $ writeIORef ref
+                original = mkTracer $ writeIORef ref
                 TraceWith _ emitFn _ = original
             emitFn "direct emit"
             result <- readIORef ref
@@ -38,7 +39,7 @@ spec = do
         it "extracts contra function" $ do
             ref <- newIORef (0 :: Int)
             let original :: Tracer IO Int
-                original = arrow $ emit $ writeIORef ref
+                original = mkTracer $ writeIORef ref
                 TraceWith _ _ mapFn = original
                 stringTracer = mapFn length
             traceWith stringTracer "hello"
@@ -51,7 +52,7 @@ spec = do
                 \(s :: String) -> ioProperty $ do
                     ref <- newIORef ""
                     let original :: Tracer IO String
-                        original = arrow $ emit $ writeIORef ref
+                        original = mkTracer $ writeIORef ref
                     traceWith (tracer original) s
                     result <- readIORef ref
                     return $ result === s
@@ -62,7 +63,7 @@ spec = do
                 \(s :: String) -> ioProperty $ do
                     ref <- newIORef ""
                     let original :: Tracer IO String
-                        original = arrow $ emit $ writeIORef ref
+                        original = mkTracer $ writeIORef ref
                     trace original s
                     result <- readIORef ref
                     return $ result === s
@@ -73,7 +74,7 @@ spec = do
                 \(n :: Int) -> ioProperty $ do
                     ref <- newIORef ""
                     let original :: Tracer IO String
-                        original = arrow $ emit $ writeIORef ref
+                        original = mkTracer $ writeIORef ref
                         intTracer = contra original show
                     traceWith intTracer n
                     result <- readIORef ref
@@ -84,7 +85,7 @@ spec = do
                 \(s :: String) -> ioProperty $ do
                     ref <- newIORef ""
                     let original :: Tracer IO String
-                        original = arrow $ emit $ writeIORef ref
+                        original = mkTracer $ writeIORef ref
                         same = contra original id
                     traceWith same s
                     result <- readIORef ref
@@ -93,7 +94,7 @@ spec = do
         it "composes correctly" $ do
             ref <- newIORef ""
             let original :: Tracer IO String
-                original = arrow $ emit $ writeIORef ref
+                original = mkTracer $ writeIORef ref
                 showTracer :: Tracer IO Int
                 showTracer = contra original show
                 doubleTracer :: Tracer IO Int
