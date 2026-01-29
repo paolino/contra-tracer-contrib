@@ -11,6 +11,8 @@ This library provides commonly needed functionality when working with `contra-tr
 | [`Data.Tracer.Intercept`](api/intercept.md) | Selective forwarding via partial mapping |
 | [`Data.Tracer.LogFile`](api/logfile.md) | File and stdout logging with buffering |
 | [`Data.Tracer.ThreadSafe`](api/thread-safe.md) | MVar-based thread-safe wrapper |
+| [`Data.Tracer.Throttle`](api/throttle.md) | Frequency-based event throttling |
+| [`Data.Tracer.Timestamp`](api/timestamp.md) | Timestamped event wrapper |
 | [`Data.Tracer.Timestamps`](api/timestamps.md) | ISO 8601 timestamp prepending |
 | [`Data.Tracer.TraceWith`](api/trace-with.md) | Pattern synonym for tracer deconstruction |
 

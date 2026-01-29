@@ -21,6 +21,8 @@ build-depends:
 | `Data.Tracer.Intercept` | Selective forwarding via partial mapping |
 | `Data.Tracer.LogFile` | File and stdout logging with buffering |
 | `Data.Tracer.ThreadSafe` | MVar-based thread-safe wrapper |
+| `Data.Tracer.Throttle` | Frequency-based event throttling |
+| `Data.Tracer.Timestamp` | Timestamped event wrapper |
 | `Data.Tracer.Timestamps` | ISO 8601 timestamp prepending |
 | `Data.Tracer.TraceWith` | Pattern synonym for tracer deconstruction |
 | `Data.Tracer.Contrib` | Convenience re-exports |

@@ -42,5 +42,7 @@ nav:
     - Intercept: api/intercept.md
     - LogFile: api/logfile.md
     - ThreadSafe: api/thread-safe.md
+    - Throttle: api/throttle.md
+    - Timestamp: api/timestamp.md
     - Timestamps: api/timestamps.md
     - TraceWith: api/trace-with.md

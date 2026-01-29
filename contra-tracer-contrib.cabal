@@ -34,11 +34,14 @@ library
     Data.Tracer.Intercept
     Data.Tracer.LogFile
     Data.Tracer.ThreadSafe
+    Data.Tracer.Throttle
+    Data.Tracer.Timestamp
     Data.Tracer.Timestamps
     Data.Tracer.TraceWith
 
   build-depends:
     , base           >=4.14 && <5
+    , containers     >=0.6  && <0.8
     , contra-tracer  >=0.1  && <0.3
     , time           >=1.9  && <1.15
 
@@ -53,6 +56,7 @@ test-suite unit-tests
     Data.Tracer.InterceptSpec
     Data.Tracer.LogFileSpec
     Data.Tracer.ThreadSafeSpec
+    Data.Tracer.ThrottleSpec
     Data.Tracer.TimestampsSpec
     Data.Tracer.TraceWithSpec
 
@@ -66,6 +70,7 @@ test-suite unit-tests
     , hspec
     , QuickCheck
     , temporary
+    , time
 
   hs-source-dirs:   test
   default-language: Haskell2010
