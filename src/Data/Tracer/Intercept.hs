@@ -1,17 +1,17 @@
 {-# LANGUAGE RankNTypes #-}
 
+{- |
+Module      : Data.Tracer.Intercept
+Description : Selective forwarding via partial mapping
+Copyright   : (c) Paolo Veronelli, 2025
+License     : Apache-2.0
+
+Provides a combinator for intercepting trace events and selectively
+forwarding them to a secondary tracer based on a partial mapping function.
+-}
 module Data.Tracer.Intercept
     ( intercept
     ) where
-
--- \|
--- Module      : Data.Tracer.Intercept
--- Description : Selective forwarding via partial mapping
--- Copyright   : (c) Paolo Veronelli, 2025
--- License     : Apache-2.0
---
--- Provides a combinator for intercepting trace events and selectively
--- forwarding them to a secondary tracer based on a partial mapping function.
 
 import Control.Tracer (Tracer, arrow, emit, traceWith)
 import Data.Foldable (for_)

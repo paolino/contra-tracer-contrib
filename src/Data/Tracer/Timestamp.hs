@@ -1,14 +1,14 @@
+{- |
+Module      : Data.Tracer.Timestamp
+Description : Timestamped event wrapper
+Copyright   : (c) Paolo Veronelli, 2025
+License     : Apache-2.0
+
+Provides a simple wrapper to pair events with their timestamps.
+-}
 module Data.Tracer.Timestamp
     ( Timestamp (..)
     ) where
-
--- \|
--- Module      : Data.Tracer.Timestamp
--- Description : Timestamped event wrapper
--- Copyright   : (c) Paolo Veronelli, 2025
--- License     : Apache-2.0
---
--- Provides a simple wrapper to pair events with their timestamps.
 
 import Data.Time.Clock (UTCTime)
 

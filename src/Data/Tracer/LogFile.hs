@@ -1,15 +1,15 @@
+{- |
+Module      : Data.Tracer.LogFile
+Description : File and stdout logging with buffering
+Copyright   : (c) Paolo Veronelli, 2025
+License     : Apache-2.0
+
+Provides tracers for logging to files or stdout with appropriate buffering.
+-}
 module Data.Tracer.LogFile
     ( logFileTracer
     , logTracer
     ) where
-
--- \|
--- Module      : Data.Tracer.LogFile
--- Description : File and stdout logging with buffering
--- Copyright   : (c) Paolo Veronelli, 2025
--- License     : Apache-2.0
---
--- Provides tracers for logging to files or stdout with appropriate buffering.
 
 import Control.Tracer (Tracer, arrow, emit)
 import System.IO

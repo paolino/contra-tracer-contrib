@@ -1,14 +1,14 @@
+{- |
+Module      : Data.Tracer.ThreadSafe
+Description : MVar-based thread-safe wrapper
+Copyright   : (c) Paolo Veronelli, 2025
+License     : Apache-2.0
+
+Provides a thread-safe wrapper for tracers using MVar synchronization.
+-}
 module Data.Tracer.ThreadSafe
     ( newThreadSafeTracer
     ) where
-
--- \|
--- Module      : Data.Tracer.ThreadSafe
--- Description : MVar-based thread-safe wrapper
--- Copyright   : (c) Paolo Veronelli, 2025
--- License     : Apache-2.0
---
--- Provides a thread-safe wrapper for tracers using MVar synchronization.
 
 import Control.Concurrent.MVar (newMVar, withMVar)
 import Control.Tracer (Tracer, arrow, emit, traceWith)

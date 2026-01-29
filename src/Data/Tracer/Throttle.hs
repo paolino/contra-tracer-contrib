@@ -1,19 +1,19 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NamedFieldPuns #-}
 
+{- |
+Module      : Data.Tracer.Throttle
+Description : Frequency-based event throttling
+Copyright   : (c) Paolo Veronelli, 2025
+License     : Apache-2.0
+
+Provides a tracer that throttles events based on frequency limits.
+Uses event timestamps for deterministic, testable behavior.
+-}
 module Data.Tracer.Throttle
     ( Throttled (..)
     , throttleByFrequency
     ) where
-
--- \|
--- Module      : Data.Tracer.Throttle
--- Description : Frequency-based event throttling
--- Copyright   : (c) Paolo Veronelli, 2025
--- License     : Apache-2.0
---
--- Provides a tracer that throttles events based on frequency limits.
--- Uses event timestamps for deterministic, testable behavior.
 
 import Control.Tracer (Tracer, arrow, emit, traceWith)
 import Data.IORef (modifyIORef', newIORef, readIORef)
