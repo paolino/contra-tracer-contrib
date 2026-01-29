@@ -29,6 +29,7 @@ let
         secure: True
 
       constraints: contra-tracer < 0.2
+                 , contra-tracer-contrib +iohk
     '';
   };
 
