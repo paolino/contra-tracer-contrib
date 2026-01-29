@@ -22,8 +22,7 @@ import Data.Tracer.Intercept (intercept)
 import Data.Tracer.Internal (mkTracer)
 import Data.Tracer.ThreadSafe (newThreadSafeTracer)
 import Data.Tracer.Throttle (Throttled (..), throttleByFrequency)
-import Data.Tracer.Timestamp (Timestamp (..))
-import Data.Tracer.Timestamps (addTimestampsTracer)
+import Data.Tracer.Timestamp (Timestamped (..), timestampTracer)
 import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
 
 -- | Create a tracer that collects events in a list (thread-safe append)
@@ -39,13 +38,9 @@ baseTime = read "2024-01-01 00:00:00 UTC"
 addSeconds :: Double -> UTCTime -> UTCTime
 addSeconds s = addUTCTime (realToFrac s)
 
--- | Create a Timestamp with a specific time
-mkTimestamp :: UTCTime -> a -> Timestamp a
-mkTimestamp t a = Timestamp{timestampTime = t, timestampEvent = a}
-
--- | Check if a string has timestamp prefix format
-hasTimestampPrefix :: String -> Bool
-hasTimestampPrefix s = take 1 s == "[" && "] " `isInfixOf` s
+-- | Create a Timestamped with a specific time
+mkTimestamped :: UTCTime -> a -> Timestamped a
+mkTimestamped t a = Timestamped{timestampedTime = t, timestampedEvent = a}
 
 -- | Match errors by checking for "error" in the string
 matchError :: String -> Maybe String
@@ -57,13 +52,18 @@ extractDrops t@Throttled{throttledDropped}
     | throttledDropped > 0 = Just t
     | otherwise = Nothing
 
+-- | Check if a Timestamped event is valid (non-empty event)
+hasValidTimestamp :: Timestamped String -> Bool
+hasValidTimestamp ts = not (null (timestampedEvent ts))
+
 spec :: Spec
 spec = describe "Tracer Compositions" $ do
-    describe "ThreadSafe + Timestamps" $ do
+    describe "timestampTracer + ThreadSafe" $ do
         it "adds timestamps correctly under concurrent access" $ do
             ref <- newIORef []
             let baseTracer = collectTracer ref
-                timestamped = addTimestampsTracer baseTracer
+            throttled <- throttleByFrequency [] baseTracer
+            let timestamped = timestampTracer throttled
             safe <- newThreadSafeTracer timestamped
 
             forConcurrently_ [1 :: Int .. 50] $ \i ->
@@ -71,8 +71,8 @@ spec = describe "Tracer Compositions" $ do
 
             messages <- readIORef ref
             length messages `shouldBe` 500
-            -- All messages should have timestamp format [...]
-            all hasTimestampPrefix messages `shouldBe` True
+            -- All events should be Throttled with Timestamped inside
+            all (hasValidTimestamp . throttledEvent) messages `shouldBe` True
 
     describe "Throttle + ThreadSafe" $ do
         it "throttles correctly under concurrent access" $ do
@@ -83,7 +83,8 @@ spec = describe "Tracer Compositions" $ do
 
             -- All events have same timestamp, so all after first should drop
             forConcurrently_ [1 :: Int .. 10] $ \_ ->
-                replicateM_ 10 $ traceWith safe (mkTimestamp baseTime "event")
+                replicateM_ 10 $
+                    traceWith safe (mkTimestamped baseTime "event")
 
             results <- readIORef ref
             -- First event passes, rest are dropped (same timestamp)
@@ -98,7 +99,7 @@ spec = describe "Tracer Compositions" $ do
             -- Send events: 0s, 0.1s, 0.2s, ..., 1.0s, 1.1s, ..., 2.0s
             forM_ [0 :: Int .. 20] $ \i -> do
                 let ts = addSeconds (fromIntegral i * 0.1) baseTime
-                traceWith safe (mkTimestamp ts ("event-" ++ show i))
+                traceWith safe (mkTimestamped ts ("event-" ++ show i))
 
             results <- reverse <$> readIORef ref
             -- Events at 0s, 1.0s, 2.0s should pass (indices 0, 10, 20)
@@ -150,10 +151,10 @@ spec = describe "Tracer Compositions" $ do
             logRef <- newIORef []
             errorRef <- newIORef []
 
-            let logTracer = collectTracer logRef
+            let logTracer' = collectTracer logRef
                 errorTracer = collectTracer errorRef
                 -- Intercept events with drops before they reach logTracer
-                interceptedLog = intercept errorTracer extractDrops logTracer
+                interceptedLog = intercept errorTracer extractDrops logTracer'
 
             -- Throttle at 10 Hz (0.1s interval)
             throttled <- throttleByFrequency [\_ -> Just 10.0] interceptedLog
@@ -162,7 +163,7 @@ spec = describe "Tracer Compositions" $ do
             -- Send 100 events with 0.05s spacing (faster than throttle)
             forM_ [1 :: Int .. 100] $ \i -> do
                 let ts = addSeconds (fromIntegral i * 0.05) baseTime
-                traceWith safe (mkTimestamp ts ("event-" ++ show i))
+                traceWith safe (mkTimestamped ts ("event-" ++ show i))
 
             logs <- readIORef logRef
             errors <- readIORef errorRef
@@ -179,10 +180,10 @@ spec = describe "Tracer Compositions" $ do
             logRef <- newIORef []
             errorRef <- newIORef []
 
-            let logTracer = collectTracer logRef
+            let logTracer' = collectTracer logRef
                 errorTracer = collectTracer errorRef
                 -- Intercept events with drops before they reach logTracer
-                interceptedLog = intercept errorTracer extractDrops logTracer
+                interceptedLog = intercept errorTracer extractDrops logTracer'
 
             throttled <- throttleByFrequency [\_ -> Just 100.0] interceptedLog
             safe <- newThreadSafeTracer throttled
@@ -192,7 +193,9 @@ spec = describe "Tracer Compositions" $ do
                 forM_ [1 :: Int .. 50] $ \eventId -> do
                     let ts = addSeconds (fromIntegral eventId * 0.005) baseTime
                     traceWith safe $
-                        mkTimestamp ts ("t" ++ show threadId ++ "-e" ++ show eventId)
+                        mkTimestamped
+                            ts
+                            ("t" ++ show threadId ++ "-e" ++ show eventId)
 
             logs <- readIORef logRef
             -- Should have processed events without crashes or deadlocks

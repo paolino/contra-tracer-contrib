@@ -21,7 +21,7 @@ import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Time.Clock (UTCTime, diffUTCTime)
 import Data.Tracer.Internal (mkTracer)
-import Data.Tracer.Timestamp (Timestamp (..))
+import Data.Tracer.Timestamp (Timestamped (..))
 
 {- | Result of throttling an event.
 
@@ -29,7 +29,7 @@ When an event passes through the throttle, it includes a count of
 how many events were dropped since the last emission.
 -}
 data Throttled a = Throttled
-    { throttledEvent :: Timestamp a
+    { throttledEvent :: Timestamped a
     -- ^ the event that passed through
     , throttledDropped :: Int
     -- ^ number of events dropped since last emission
@@ -67,12 +67,12 @@ throttleByFrequency
     -- ^ matchers returning frequency in Hz (events/second)
     -> Tracer IO (Throttled a)
     -- ^ downstream tracer
-    -> IO (Tracer IO (Timestamp a))
+    -> IO (Tracer IO (Timestamped a))
 throttleByFrequency matchers downstream = do
     stateRef <- newIORef (Map.empty :: Map Int ThrottleState)
     return $ mkTracer $ \event -> do
-        let ts = timestampTime event
-        case findMatch matchers (timestampEvent event) of
+        let ts = timestampedTime event
+        case findMatch matchers (timestampedEvent event) of
             Nothing ->
                 -- No matcher - pass through immediately
                 traceWith downstream $

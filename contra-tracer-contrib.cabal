@@ -50,7 +50,6 @@ library
     Data.Tracer.ThreadSafe
     Data.Tracer.Throttle
     Data.Tracer.Timestamp
-    Data.Tracer.Timestamps
     Data.Tracer.TraceWith
 
   exposed-modules:  Data.Tracer.Internal
@@ -76,7 +75,7 @@ test-suite unit-tests
     Data.Tracer.LogFileSpec
     Data.Tracer.ThreadSafeSpec
     Data.Tracer.ThrottleSpec
-    Data.Tracer.TimestampsSpec
+    Data.Tracer.TimestampSpec
     Data.Tracer.TraceWithSpec
 
   build-tool-depends: hspec-discover:hspec-discover
