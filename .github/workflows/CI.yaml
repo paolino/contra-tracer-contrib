@@ -11,25 +11,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Test with CHaP's contra-tracer via Nix devshell
-  build-chap:
+  # Test with CHaP's contra-tracer (simple function-based API)
+  build-iohk:
     runs-on: ubuntu-latest
-    name: build (CHaP/Nix)
+    name: build (iohk/CHaP)
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: paolino/dev-assets/setup-nix@v0.0.1
+      - uses: haskell-actions/setup@v2
         with:
-          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          ghc-version: '9.8.4'
+          cabal-version: '3.12'
+
+      - name: Update CHaP index
+        run: cabal update --project-file=cabal.project.iohk
 
       - name: Build
-        run: nix develop --quiet -c cabal build
+        run: cabal build -f iohk --project-file=cabal.project.iohk
 
       - name: Test
-        run: nix develop --quiet -c cabal test
+        run: cabal test -f iohk --project-file=cabal.project.iohk
 
-  # Test with Hackage's contra-tracer via GHCup
+  # Test with Hackage's contra-tracer (arrow-based API)
   build-hackage:
     runs-on: ubuntu-latest
     name: build (Hackage)
