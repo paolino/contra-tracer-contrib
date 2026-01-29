@@ -1,14 +1,14 @@
+{- |
+Module      : Data.Tracer.Timestamps
+Description : ISO 8601 timestamp prepending
+Copyright   : (c) Paolo Veronelli, 2025
+License     : Apache-2.0
+
+Provides a tracer transformer that prepends timestamps to log messages.
+-}
 module Data.Tracer.Timestamps
     ( addTimestampsTracer
     ) where
-
--- \|
--- Module      : Data.Tracer.Timestamps
--- Description : ISO 8601 timestamp prepending
--- Copyright   : (c) Paolo Veronelli, 2025
--- License     : Apache-2.0
---
--- Provides a tracer transformer that prepends timestamps to log messages.
 
 import Control.Tracer (Tracer, arrow, emit, traceWith)
 import Data.Time.Clock (getCurrentTime)

@@ -2,21 +2,30 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ViewPatterns #-}
 
+{- |
+Module      : Data.Tracer.TraceWith
+Description : Pattern synonym for tracer deconstruction
+Copyright   : (c) Paolo Veronelli, 2025
+License     : Apache-2.0
+
+Provides a pattern synonym to deconstruct a 'Tracer' into its components,
+enabling direct access to the emitter function and contravariant mapping.
+-}
 module Data.Tracer.TraceWith
-    ( pattern TraceWith
+    ( -- * Pattern Synonym
+      pattern TraceWith
+
+      -- * Record Selectors
+
+      -- | The pattern synonym exposes three record selectors:
+      --
+      -- * 'tracer' - returns the tracer unchanged
+      -- * 'trace' - extracts the @a -> m ()@ emitter function
+      -- * 'contra' - applies contravariant mapping: @(b -> a) -> Tracer m b@
     , tracer
     , trace
     , contra
     ) where
-
--- \|
--- Module      : Data.Tracer.TraceWith
--- Description : Pattern synonym for tracer deconstruction
--- Copyright   : (c) Paolo Veronelli, 2025
--- License     : Apache-2.0
---
--- Provides a pattern synonym to deconstruct a 'Tracer' into its components,
--- enabling direct access to the emitter function and contravariant mapping.
 
 import Control.Arrow ((&&&))
 import Control.Tracer (Tracer, traceWith)
