@@ -38,12 +38,18 @@ unit match="":
             --test-option="{{ match }}"
     fi
 
+# Check Hackage compatibility
+hackage-check:
+    #!/usr/bin/env bash
+    cabal check
+
 # Full CI pipeline
 CI:
     #!/usr/bin/env bash
     set -euo pipefail
     just build
     just unit
+    just hackage-check
     fourmolu -m check src test
     hlint src test
 
