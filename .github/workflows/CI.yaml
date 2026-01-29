@@ -23,11 +23,14 @@ jobs:
         with:
           cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      - name: Build
+      - name: Build library
         run: nix build .#lib-iohk --quiet
 
-      - name: Test
-        run: nix build .#unit-tests-iohk --quiet && nix run .#unit-tests-iohk --quiet
+      - name: Build tests
+        run: nix build .#unit-tests-iohk --quiet
+
+      - name: Run tests
+        run: nix run .#unit-tests-iohk --quiet
 
   # Test with Hackage's contra-tracer (arrow-based API)
   build-hackage:
@@ -41,11 +44,14 @@ jobs:
         with:
           cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      - name: Build
+      - name: Build library
         run: nix build .#lib --quiet
 
-      - name: Test
-        run: nix build .#unit-tests --quiet && nix run .#unit-tests --quiet
+      - name: Build tests
+        run: nix build .#unit-tests --quiet
+
+      - name: Run tests
+        run: nix run .#unit-tests --quiet
 
   lint:
     runs-on: ubuntu-latest
