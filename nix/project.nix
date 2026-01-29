@@ -11,6 +11,7 @@ let
       hoogle = indexTool;
       fourmolu = indexTool;
       hlint = indexTool;
+      hspec-discover = indexTool;
     };
     buildInputs = [ pkgs.just pkgs.nixfmt-classic pkgs.shellcheck ];
   };
