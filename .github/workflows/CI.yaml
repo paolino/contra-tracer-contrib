@@ -22,10 +22,10 @@ jobs:
           cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Build
-        run: nix develop --quiet -c just build
+        run: nix build .#lib --quiet
 
       - name: Test
-        run: nix develop --quiet -c just unit
+        run: nix run .#unit-tests --quiet
 
       - name: Check formatting
         run: nix develop --quiet -c fourmolu -m check src test

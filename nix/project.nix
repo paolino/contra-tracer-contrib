@@ -24,7 +24,10 @@ let
   };
 
 in {
-  packages = { lib = project.hsPkgs.contra-tracer-contrib.components.library; };
+  packages = {
+    lib = project.hsPkgs.contra-tracer-contrib.components.library;
+    unit-tests = project.hsPkgs.contra-tracer-contrib.components.tests.unit-tests;
+  };
 
   devShells.default = project.shell;
 
