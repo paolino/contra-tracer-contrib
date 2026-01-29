@@ -6,6 +6,10 @@
     nixpkgs.follows = "haskellNix/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     mkdocs.url = "github:paolino/dev-assets?dir=mkdocs";
+    CHaP = {
+      url = "github:intersectmbo/cardano-haskell-packages?ref=repo";
+      flake = false;
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, flake-parts, haskellNix, mkdocs, ... }:
@@ -19,6 +23,7 @@
               inherit system;
             };
             inherit self;
+            inherit (inputs) CHaP;
           };
         in {
           packages = project.packages // {
