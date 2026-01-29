@@ -23,6 +23,14 @@ extra-doc-files:
 
 tested-with:     GHC ==9.8.4
 
+flag iohk
+  description:
+    Use CHaP's contra-tracer (simple Tracer constructor)
+    instead of Hackage's arrow-based API
+
+  default:     False
+  manual:      True
+
 source-repository head
   type:     git
   location: https://github.com/paolino/contra-tracer-contrib
@@ -54,6 +62,9 @@ library
 
   hs-source-dirs:   src
   default-language: Haskell2010
+
+  if flag(iohk)
+    cpp-options: -DIOHK_CONTRA_TRACER
 
 test-suite unit-tests
   import:             warnings
