@@ -11,11 +11,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Test with CHaP's contra-tracer (IOHK fork)
-  # The Nix devshell uses IOG cache which provides CHaP's version
-  build-iohk:
+  # Test with CHaP's contra-tracer via Nix devshell
+  build-chap:
     runs-on: ubuntu-latest
-    name: build (iohk/CHaP)
+    name: build (CHaP/Nix)
 
     steps:
       - uses: actions/checkout@v4
@@ -25,16 +24,15 @@ jobs:
           cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Build
-        run: nix develop --quiet -c cabal build -f iohk
+        run: nix develop --quiet -c cabal build
 
       - name: Test
-        run: nix develop --quiet -c cabal test -f iohk
+        run: nix develop --quiet -c cabal test
 
-  # Test with Hackage's contra-tracer (arrow-based)
-  # Uses GHCup instead of Nix to get vanilla Hackage packages
+  # Test with Hackage's contra-tracer via GHCup
   build-hackage:
     runs-on: ubuntu-latest
-    name: build (hackage)
+    name: build (Hackage)
 
     steps:
       - uses: actions/checkout@v4

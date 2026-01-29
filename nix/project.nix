@@ -1,7 +1,7 @@
-{ pkgs, self }:
+{ pkgs, self, CHaP }:
 
 let
-  indexState = "2025-01-15T00:00:00Z";
+  indexState = "2025-12-07T00:00:00Z";
   indexTool = { index-state = indexState; };
 
   shell = { pkgs, ... }: {
@@ -21,6 +21,7 @@ let
     compiler-nix-name = "ghc984";
     index-state = indexState;
     shell = shell { inherit pkgs; };
+    inputMap = { "https://chap.intersectmbo.org/" = CHaP; };
   };
 
 in {
