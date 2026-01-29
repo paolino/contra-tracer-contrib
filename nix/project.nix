@@ -24,6 +24,10 @@ let
     shell = shell { inherit pkgs; };
     inputMap = { "https://chap.intersectmbo.org/" = CHaP; };
     cabalProjectLocal = ''
+      repository cardano-haskell-packages
+        url: https://chap.intersectmbo.org/
+        secure: True
+
       constraints: contra-tracer < 0.2
     '';
   };
