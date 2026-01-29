@@ -2,8 +2,14 @@
 
 [![CI](https://github.com/paolino/contra-tracer-contrib/actions/workflows/CI.yaml/badge.svg)](https://github.com/paolino/contra-tracer-contrib/actions/workflows/CI.yaml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Haskell](https://img.shields.io/badge/Haskell-GHC%209.8-purple.svg)](https://www.haskell.org/)
 
 Utility modules for [contra-tracer](https://hackage.haskell.org/package/contra-tracer).
+
+## Compatibility
+
+- **contra-tracer**: >= 0.1 && < 0.3
+- **GHC**: 9.8.4 (tested)
 
 ## Installation
 
