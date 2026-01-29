@@ -1,0 +1,58 @@
+{-# LANGUAGE PatternSynonyms #-}
+
+module Data.Tracer.Contrib
+    ( -- * Re-exports from contra-tracer
+      Tracer
+    , traceWith
+
+      -- * Intercept
+    , intercept
+
+      -- * Logging
+    , logFileTracer
+    , logTracer
+
+      -- * Thread Safety
+    , newThreadSafeTracer
+
+      -- * Timestamps
+    , addTimestampsTracer
+
+      -- * Pattern Synonym
+    , pattern TraceWith
+    , tracer
+    , trace
+    , contra
+    ) where
+
+-- \|
+-- Module      : Data.Tracer.Contrib
+-- Description : Convenience re-exports for contra-tracer utilities
+-- Copyright   : (c) Paolo Veronelli, 2025
+-- License     : Apache-2.0
+--
+-- This module re-exports all utilities from contra-tracer-contrib along with
+-- the core 'Tracer' type and 'traceWith' function from contra-tracer.
+--
+-- @
+-- import Data.Tracer.Contrib
+--
+-- main :: IO ()
+-- main = logTracer Nothing $ \\tracer -> do
+--     safeTracer <- newThreadSafeTracer tracer
+--     let timestamped = addTimestampsTracer safeTracer
+--     traceWith timestamped "Hello, world!"
+-- @
+
+import Control.Tracer (Tracer, traceWith)
+
+import Data.Tracer.Intercept (intercept)
+import Data.Tracer.LogFile (logFileTracer, logTracer)
+import Data.Tracer.ThreadSafe (newThreadSafeTracer)
+import Data.Tracer.Timestamps (addTimestampsTracer)
+import Data.Tracer.TraceWith
+    ( contra
+    , trace
+    , tracer
+    , pattern TraceWith
+    )

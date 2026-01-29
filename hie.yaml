@@ -1,0 +1,6 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:contra-tracer-contrib"
+    - path: "test"
+      component: "contra-tracer-contrib:test:unit-tests"

@@ -1,0 +1,42 @@
+# Cabal
+dist-newstyle/
+cabal.project.local
+cabal.project.local~
+*.cabal.bak
+
+# Nix
+result
+result-*
+.direnv/
+
+# Haskell
+*.hi
+*.o
+*.chi
+*.chs.h
+*.dyn_hi
+*.dyn_o
+.hpc
+.hsenv
+.stack-work/
+*.hp
+*.prof
+*.eventlog
+*.aux
+.HTF/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+tags
+TAGS
+
+# MkDocs
+site/
+
+# macOS
+.DS_Store
