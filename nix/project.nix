@@ -43,9 +43,14 @@ let
 
 in {
   packages = {
+    # Hackage (default)
     lib = projectHackage.hsPkgs.contra-tracer-contrib.components.library;
     unit-tests =
       projectHackage.hsPkgs.contra-tracer-contrib.components.tests.unit-tests;
+    # IOHK/CHaP
+    lib-iohk = projectIohk.hsPkgs.contra-tracer-contrib.components.library;
+    unit-tests-iohk =
+      projectIohk.hsPkgs.contra-tracer-contrib.components.tests.unit-tests;
   };
 
   devShells = {
