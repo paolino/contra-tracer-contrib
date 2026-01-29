@@ -2,16 +2,17 @@ module Data.Tracer.ThrottleSpec
     ( spec
     ) where
 
-import Control.Tracer (Tracer, arrow, emit, traceWith)
+import Control.Tracer (Tracer, traceWith)
 import Data.IORef (IORef, modifyIORef', newIORef, readIORef)
 import Data.Time.Clock (UTCTime, addUTCTime)
+import Data.Tracer.Internal (mkTracer)
 import Data.Tracer.Throttle (Throttled (..), throttleByFrequency)
 import Data.Tracer.Timestamp (Timestamp (..))
 import Test.Hspec (Spec, describe, it, shouldBe)
 
 -- | Create a tracer that collects events in a list
 collectTracer :: IORef [a] -> Tracer IO a
-collectTracer ref = arrow $ emit $ \a -> modifyIORef' ref (a :)
+collectTracer ref = mkTracer $ \a -> modifyIORef' ref (a :)
 
 -- | Helper to create a Timestamp with a specific time
 mkTimestamp :: UTCTime -> a -> Timestamp a

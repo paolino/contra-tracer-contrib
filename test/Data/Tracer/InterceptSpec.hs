@@ -2,9 +2,10 @@
 
 module Data.Tracer.InterceptSpec (spec) where
 
-import Control.Tracer (arrow, emit, traceWith)
+import Control.Tracer (Tracer (Tracer), traceWith)
 import Data.IORef (modifyIORef', newIORef, readIORef)
 import Data.Tracer.Intercept (intercept)
+import Data.Tracer.Internal (mkTracer)
 import Test.Hspec
 import Test.QuickCheck
 
@@ -16,9 +17,9 @@ spec = do
                 \(events :: [Int]) -> ioProperty $ do
                     primaryRef <- newIORef []
                     secondaryRef <- newIORef []
-                    let primary = arrow $ emit $ \x ->
+                    let primary = mkTracer $ \x ->
                             modifyIORef' primaryRef (x :)
-                        secondary = arrow $ emit $ \x ->
+                        secondary = mkTracer $ \x ->
                             modifyIORef' secondaryRef (x :)
                         intercepted = intercept secondary (const Nothing) primary
                     mapM_ (traceWith intercepted) events
@@ -30,9 +31,9 @@ spec = do
                 \(events :: [Int]) -> ioProperty $ do
                     primaryRef <- newIORef []
                     secondaryRef <- newIORef []
-                    let primary = arrow $ emit $ \x ->
+                    let primary = mkTracer $ \x ->
                             modifyIORef' primaryRef (x :)
-                        secondary = arrow $ emit $ \x ->
+                        secondary = mkTracer $ \x ->
                             modifyIORef' secondaryRef (x :)
                         onlyEven x = if even x then Just x else Nothing
                         intercepted = intercept secondary onlyEven primary
@@ -45,9 +46,9 @@ spec = do
                 \(events :: [Int]) -> ioProperty $ do
                     primaryRef <- newIORef []
                     secondaryRef <- newIORef []
-                    let primary = arrow $ emit $ \x ->
+                    let primary = mkTracer $ \x ->
                             modifyIORef' primaryRef (x :)
-                        secondary = arrow $ emit $ \x ->
+                        secondary = mkTracer $ \x ->
                             modifyIORef' secondaryRef (x :)
                         doubleIfPositive x =
                             if x > 0 then Just (x * 2) else Nothing
@@ -60,9 +61,9 @@ spec = do
 
         it "emits to secondary before primary" $ do
             ref <- newIORef []
-            let primary = arrow $ emit $ \x ->
+            let primary = mkTracer $ \x ->
                     modifyIORef' ref ((x, "primary") :)
-                secondary = arrow $ emit $ \x ->
+                secondary = mkTracer $ \x ->
                     modifyIORef' ref ((x, "secondary") :)
                 intercepted = intercept secondary Just primary
             traceWith intercepted "test"

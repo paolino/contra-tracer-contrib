@@ -13,8 +13,9 @@ module Data.Tracer.Intercept
     ( intercept
     ) where
 
-import Control.Tracer (Tracer, arrow, emit, traceWith)
+import Control.Tracer (Tracer, traceWith)
 import Data.Foldable (for_)
+import Data.Tracer.Internal (mkTracer)
 
 {- | Modify a 'Tracer' to emit to another 'Tracer' based on a partial mapping
 function.
@@ -32,14 +33,13 @@ intercept secondary mapping primary
 * @primary@ - receives all events unchanged
 -}
 intercept
-    :: (Monad m)
-    => Tracer m b
+    :: Tracer IO b
     -- ^ secondary tracer for intercepted events
     -> (a -> Maybe b)
     -- ^ partial mapping function
-    -> Tracer m a
+    -> Tracer IO a
     -- ^ primary tracer
-    -> Tracer m a
-intercept secondary g primary = arrow $ emit $ \a -> do
+    -> Tracer IO a
+intercept secondary g primary = mkTracer $ \a -> do
     for_ (g a) (traceWith secondary)
     traceWith primary a

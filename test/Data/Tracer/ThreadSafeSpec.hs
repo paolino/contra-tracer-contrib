@@ -3,8 +3,9 @@
 module Data.Tracer.ThreadSafeSpec (spec) where
 
 import Control.Concurrent.Async (forConcurrently_)
-import Control.Tracer (Tracer, arrow, emit, traceWith)
+import Control.Tracer (Tracer, traceWith)
 import Data.IORef (atomicModifyIORef', newIORef, readIORef)
+import Data.Tracer.Internal (mkTracer)
 import Data.Tracer.ThreadSafe (newThreadSafeTracer)
 import Test.Hspec
 import Test.QuickCheck
@@ -19,7 +20,7 @@ spec = do
                         eventsPerThread = 10 :: Int
                         totalEvents = numThreads * eventsPerThread
                     ref <- newIORef (0 :: Int)
-                    let unsafeTracer = arrow $ emit $ \_ ->
+                    let unsafeTracer = mkTracer $ \_ ->
                             atomicModifyIORef' ref (\x -> (x + 1, ()))
                     safeTracer <- newThreadSafeTracer unsafeTracer
                     forConcurrently_ [1 .. numThreads] $ \_ ->
@@ -34,7 +35,7 @@ spec = do
                 eventsPerThread = 100
                 totalEvents = numThreads * eventsPerThread
             ref <- newIORef []
-            let unsafeTracer = arrow $ emit $ \x ->
+            let unsafeTracer = mkTracer $ \x ->
                     atomicModifyIORef' ref (\xs -> (x : xs, ()))
             safeTracer <- newThreadSafeTracer unsafeTracer
             forConcurrently_ [1 .. numThreads] $ \threadId ->
@@ -46,7 +47,7 @@ spec = do
 
         it "returns a new tracer each time" $ do
             let baseTracer :: Tracer IO Int
-                baseTracer = arrow $ emit $ \_ -> return ()
+                baseTracer = mkTracer $ \_ -> return ()
             tracer1 <- newThreadSafeTracer baseTracer
             tracer2 <- newThreadSafeTracer baseTracer
             -- They should be different tracers (different MVars)

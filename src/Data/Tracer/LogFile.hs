@@ -11,7 +11,8 @@ module Data.Tracer.LogFile
     , logTracer
     ) where
 
-import Control.Tracer (Tracer, arrow, emit)
+import Control.Tracer (Tracer)
+import Data.Tracer.Internal (mkTracer)
 import System.IO
     ( BufferMode (..)
     , IOMode (..)
@@ -40,7 +41,7 @@ logFileTracer
 logFileTracer fp k = do
     withFile fp AppendMode $ \handle -> do
         hSetBuffering handle LineBuffering
-        k $ arrow $ emit $ hPutStrLn handle
+        k $ mkTracer $ hPutStrLn handle
 
 {- | Create a tracer that logs to a file if a filepath is provided,
 otherwise logs to stdout with line buffering.
@@ -58,5 +59,5 @@ logTracer
     -> IO a
 logTracer Nothing k = do
     hSetBuffering stdout LineBuffering
-    k $ arrow $ emit putStrLn
+    k $ mkTracer putStrLn
 logTracer (Just fp) k = logFileTracer fp k

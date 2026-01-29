@@ -14,11 +14,12 @@ module Data.Tracer.CompositionSpec (spec) where
 
 import Control.Concurrent.Async (forConcurrently_)
 import Control.Monad (forM_, replicateM_)
-import Control.Tracer (Tracer, arrow, emit, traceWith)
+import Control.Tracer (Tracer, traceWith)
 import Data.IORef (IORef, atomicModifyIORef', newIORef, readIORef)
 import Data.List (isInfixOf)
 import Data.Time.Clock (UTCTime, addUTCTime)
 import Data.Tracer.Intercept (intercept)
+import Data.Tracer.Internal (mkTracer)
 import Data.Tracer.ThreadSafe (newThreadSafeTracer)
 import Data.Tracer.Throttle (Throttled (..), throttleByFrequency)
 import Data.Tracer.Timestamp (Timestamp (..))
@@ -27,7 +28,7 @@ import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
 
 -- | Create a tracer that collects events in a list (thread-safe append)
 collectTracer :: IORef [a] -> Tracer IO a
-collectTracer ref = arrow $ emit $ \a ->
+collectTracer ref = mkTracer $ \a ->
     atomicModifyIORef' ref (\xs -> (a : xs, ()))
 
 -- | Base time for tests

@@ -10,8 +10,9 @@ module Data.Tracer.Timestamps
     ( addTimestampsTracer
     ) where
 
-import Control.Tracer (Tracer, arrow, emit, traceWith)
+import Control.Tracer (Tracer, traceWith)
 import Data.Time.Clock (getCurrentTime)
+import Data.Tracer.Internal (mkTracer)
 
 {- | Prepend timestamps to log messages.
 
@@ -27,6 +28,6 @@ addTimestampsTracer
     :: Tracer IO String
     -- ^ underlying string tracer
     -> Tracer IO String
-addTimestampsTracer tracer = arrow $ emit $ \msg -> do
+addTimestampsTracer tracer = mkTracer $ \msg -> do
     time <- getCurrentTime
     traceWith tracer $ "[" ++ show time ++ "] " ++ msg
