@@ -19,19 +19,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: haskell-actions/setup@v2
+      - uses: paolino/dev-assets/setup-nix@v0.0.1
         with:
-          ghc-version: '9.8.4'
-          cabal-version: '3.12'
-
-      - name: Update CHaP index
-        run: cabal update --project-file=cabal.project.iohk
+          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Build
-        run: cabal build -f iohk --project-file=cabal.project.iohk
+        run: nix develop .#iohk --quiet -c cabal build -f iohk
 
       - name: Test
-        run: cabal test -f iohk --project-file=cabal.project.iohk
+        run: nix develop .#iohk --quiet -c cabal test -f iohk
 
   # Test with Hackage's contra-tracer (arrow-based API)
   build-hackage:
@@ -41,16 +37,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: haskell-actions/setup@v2
+      - uses: paolino/dev-assets/setup-nix@v0.0.1
         with:
-          ghc-version: '9.8.4'
-          cabal-version: '3.12'
+          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Build
-        run: cabal build
+        run: nix develop --quiet -c cabal build
 
       - name: Test
-        run: cabal test
+        run: nix develop --quiet -c cabal test
 
   lint:
     runs-on: ubuntu-latest

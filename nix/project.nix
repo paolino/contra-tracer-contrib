@@ -16,22 +16,38 @@ let
     buildInputs = [ pkgs.just pkgs.nixfmt-classic pkgs.shellcheck ];
   };
 
-  project = pkgs.haskell-nix.cabalProject' {
+  # Project with CHaP's contra-tracer (simple function-based API)
+  projectIohk = pkgs.haskell-nix.cabalProject' {
     src = ../.;
     compiler-nix-name = "ghc984";
     index-state = indexState;
     shell = shell { inherit pkgs; };
     inputMap = { "https://chap.intersectmbo.org/" = CHaP; };
+    cabalProjectLocal = ''
+      constraints: contra-tracer < 0.2
+    '';
+  };
+
+  # Project with Hackage's contra-tracer (arrow-based API)
+  projectHackage = pkgs.haskell-nix.cabalProject' {
+    src = ../.;
+    compiler-nix-name = "ghc984";
+    index-state = indexState;
+    shell = shell { inherit pkgs; };
+    # No inputMap - uses Hackage only
   };
 
 in {
   packages = {
-    lib = project.hsPkgs.contra-tracer-contrib.components.library;
+    lib = projectHackage.hsPkgs.contra-tracer-contrib.components.library;
     unit-tests =
-      project.hsPkgs.contra-tracer-contrib.components.tests.unit-tests;
+      projectHackage.hsPkgs.contra-tracer-contrib.components.tests.unit-tests;
   };
 
-  devShells.default = project.shell;
+  devShells = {
+    default = projectHackage.shell;
+    iohk = projectIohk.shell;
+  };
 
-  checks = project.flake'.checks;
+  checks = projectHackage.flake'.checks;
 }
