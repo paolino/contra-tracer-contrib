@@ -53,6 +53,7 @@ test-suite unit-tests
   type:               exitcode-stdio-1.0
   main-is:            main.hs
   other-modules:
+    Data.Tracer.CompositionSpec
     Data.Tracer.InterceptSpec
     Data.Tracer.LogFileSpec
     Data.Tracer.ThreadSafeSpec
