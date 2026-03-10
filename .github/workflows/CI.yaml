@@ -13,15 +13,16 @@ concurrency:
 jobs:
   # Test with CHaP's contra-tracer (simple function-based API)
   build-iohk:
-    runs-on: ubuntu-latest
+    runs-on: nixos
     name: build (iohk/CHaP)
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: paolino/dev-assets/setup-nix@v0.0.1
+      - uses: cachix/cachix-action@v15
         with:
-          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          name: paolino
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Build library
         run: nix build .#lib-iohk --quiet
@@ -34,15 +35,16 @@ jobs:
 
   # Test with Hackage's contra-tracer (arrow-based API)
   build-hackage:
-    runs-on: ubuntu-latest
+    runs-on: nixos
     name: build (Hackage)
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: paolino/dev-assets/setup-nix@v0.0.1
+      - uses: cachix/cachix-action@v15
         with:
-          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          name: paolino
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Build library
         run: nix build .#lib --quiet
@@ -54,14 +56,15 @@ jobs:
         run: nix run .#unit-tests --quiet
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: nixos
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: paolino/dev-assets/setup-nix@v0.0.1
+      - uses: cachix/cachix-action@v15
         with:
-          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          name: paolino
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Check formatting
         run: nix develop --quiet -c fourmolu -m check src test
